@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{%block body %}
+
+    <h1>Hi, {{ current_user.username }}!</h1>
+
+    {% if current_user.username == user.username %}
+        <a href="{{url_for('edit_profile')}}">Edit Profile</a>
+    {%elif not current_user.is_following(user) %}
+        <p>
+            <form action="{{url_for('follow', username=user.username)}}" method="post">
+                {{form.hidden_tag()}}
+                {{form.submit(value='Follow')}}
+            </form>
+        </p>
+    {%else%}
+        <p>
+            <form action="{{url_for('unfollow', username=user.username)}}" method="post">
+                {{form.hidden_tag()}}
+                {{form.submit(value='Unfollow',class_='btn btn-danger')}}	
+            </form>
+        </p>
+    {%endif%}
+
+    {%if user.about_me %}
+        <p>{{user.about_me}}</p>
+    {%endif%}
+    <hr>
+    {%if user.last_seen %}
+        <p>Last seen: {{user.last_seen}}</p>
+    {%endif%}
+    {% for post in posts %}
+        {%include "_post.html" %}
+    {%endfor%}
+{% endblock %}
